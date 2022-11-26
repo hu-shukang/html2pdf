@@ -6,41 +6,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="./style.css">
+  <script>
+    window.onload = function() {
+        var vars = {};
+        var x = document.location.search.substring(1).split('&');
+        for (var i in x) {
+            var z = x[i].split('=', 2);
+            vars[z[0]] = unescape(z[1]);
+        }
+    
+        //if current page number == last page number
+        if (vars['page'] == vars['topage']) {
+            document.querySelectorAll('.extra')[0].textContent = 'extra text here';
+        }
+    };
+    </script>
 </head>
 <body>
-  <% studentList.forEach(function (student) { %>
+  <h1>学生情報</h1>
+  <% classList.forEach(function (c) { %>
     <table border="1">
-      <colgroup>
-        <col width="500"/>
-        <col/>
-      </colgroup>
-      <tr>
-        <th>お名前</th>
-        <td><%= student.name %></td>
-      </tr>
-      <tr>
-        <th>年齢</th>
-        <td><%= student.age %></td>
-      </tr>
-      <tr>
-        <th>住所</th>
-        <td><%= student.address %></td>
-      </tr>
-      <tr>
-        <th>趣味</th>
-        <td>
-          <% if (student.likes.length) { %>
-            <div>
-              <% student.likes.forEach(function (like) { %>
-                <div><%= like %></div>
-              <% }) %>
-            </div>
-          <% } else { %>
-            <div>趣味はありません</div>
-          <% } %>
-        </td>
-      </tr>
+      <thead>
+        <tr class="header">
+          <th colspan="4">クラス名：<%= c.className %></th>
+        </tr>
+        <tr>
+          <th>お名前</th>
+          <th>年齢</th>
+          <th>住所</th>
+          <th>趣味</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% c.studentList.forEach(function (student) { %>
+          <tr>
+            <td><%= student.name %></td>
+            <td><%= student.age %></td>
+            <td><%= student.address %></td>
+            <td>
+              <% if (student.likes.length) { %>
+                <div>
+                  <% student.likes.forEach(function (like) { %>
+                    <div><%= like %></div>
+                  <% }) %>
+                </div>
+              <% } else { %>
+                <div>趣味はありません</div>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
     </table>
   <% }) %>
+  <div class="extra"></div>
 </body>
 </html>

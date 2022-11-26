@@ -1,7 +1,7 @@
 import ejs from 'ejs';
 import fs from 'fs';
 import path from 'path';
-import { Student } from './model/student.model';
+import { Class, Student } from './model/student.model';
 import puppeteer from 'puppeteer';
 
 const main = async () => {
@@ -9,18 +9,26 @@ const main = async () => {
   const str = fs.readFileSync(filePath, {
     encoding: 'utf8',
   });
-  const studentList: Student[] = [];
-  for (let i = 0; i < 20; i++) {
-    const student: Student = {
-      name: `${i}さん`,
-      address: '東京都江戸川区',
-      age: i,
-      likes: i % 2 == 0 ? [] : ['foo', 'bar', 'baz'],
-    };
-    studentList.push(student);
+  const classList: Class[] = [];
+  for (let i = 0; i < 5; i++) {
+    const studentList: Student[] = [];
+    for (let j = 0; j < 20; j++) {
+      const student: Student = {
+        name: `${j}さん`,
+        address: '東京都江戸川区',
+        age: j,
+        likes: j % 2 == 0 ? [] : ['foo', 'bar', 'baz', 'bar', 'baz', 'bar', 'baz', 'bar', 'baz'],
+      };
+      studentList.push(student);
+    }
+    classList.push({
+      className: `${i}_class`,
+      studentList: studentList,
+    });
   }
+
   const result = ejs.compile(str)({
-    studentList: studentList,
+    classList: classList,
   });
   const outHtml = path.join(__dirname, '../out/demo.html');
   fs.writeFileSync(outHtml, result, {

@@ -1,8 +1,8 @@
 import ejs from 'ejs';
 import fs from 'fs';
 import path from 'path';
-import pdf from 'html-pdf';
 import { Student } from './model/student.model';
+import puppeteer from 'puppeteer';
 
 const main = async () => {
   const filePath = path.join(__dirname, './html/demo.ejs');
@@ -28,24 +28,27 @@ const main = async () => {
   });
 
   const outPdf = path.join(__dirname, '../out/demo.pdf');
-  const options: pdf.CreateOptions = {
-    border: {
-      top: '30px',
-      bottom: '30px',
-      left: '30px',
-      right: '30px',
-    },
-    footer: {
-      height: '20px',
-      contents: {
-        default: '<div style="text-align: center;">{{page}}/{{pages}}</div>',
-      },
-    },
-  };
-  pdf.create(result, options).toFile(outPdf, (err, res) => {
-    if (err) return console.log(err);
-    console.log(res);
+  const browser = await puppeteer.launch({
+    headless: true,
   });
+  const page = await browser.newPage();
+  await page.goto(`file://${outHtml}`, { waitUntil: 'networkidle0' });
+  await page.emulateMediaType('screen');
+  await page.pdf({
+    path: outPdf,
+    margin: { top: '100px', right: '50px', bottom: '100px', left: '50px' },
+    printBackground: true,
+    width: '2480px',
+    height: '3472px',
+    displayHeaderFooter: true,
+    headerTemplate: `<div></div>`,
+    footerTemplate: `
+    <div style="width: 100%; font-size: 20px; text-align: center;">
+        <div><span class="pageNumber"></span>/<span class="totalPages"></span></div>
+    </div>
+  `,
+  });
+  await browser.close();
 };
 
 main();

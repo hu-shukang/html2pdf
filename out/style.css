@@ -1,0 +1,26 @@
+@import url(https://fonts.googleapis.com/css?family=Signika);
+
+body {
+  font-family: 'Signika', sans-serif;
+}
+body {
+  margin: 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0px auto 30px;
+}
+
+table th {
+  background-color: aqua;
+  font-weight: bold;
+}
+
+table th, table td {
+  font-size: 50px;
+  height: 70px;
+  line-height: 70px;
+  padding: 0px 40px;
+  text-align: left;
+}

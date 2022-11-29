@@ -2,7 +2,10 @@ import ejs from 'ejs';
 import fs from 'fs';
 import path from 'path';
 import { Class, Student } from './model/student.model';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
+
+process.env.NODE_ENV = 'test';
 
 const main = async () => {
   const filePath = path.join(__dirname, './html/demo.ejs');
@@ -36,8 +39,14 @@ const main = async () => {
   });
 
   const outPdf = path.join(__dirname, '../out/demo.pdf');
+  const executablePath = await chromium.executablePath;
+  console.log(executablePath);
   const browser = await puppeteer.launch({
-    headless: true,
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: executablePath,
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
   });
   const page = await browser.newPage();
   await page.goto(`file://${outHtml}`, { waitUntil: 'networkidle0' });
